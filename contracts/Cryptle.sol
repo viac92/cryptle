@@ -17,12 +17,12 @@ contract Cryptle is Ownable, ReentrancyGuard {
 
     /* the attempts of an user */
     mapping(address => uint256) attempts;
+
+    /* the last result of a guess by an user */
+    mapping(address => uint256[5]) lastResult;
     
     // TODO set the boolean with map for msg.sender
-    bool public youWon = false;
-
-    /* array of 5 guessedWord */
-    uint256[5] public guessedWord = [0, 0, 0, 0, 0];
+    mapping(address => bool) public youWon;
 
     /* this function set a new word to guess should be called by the owner
     of the contract, the word should be a string of 5 characters 
@@ -48,28 +48,28 @@ contract Cryptle is Ownable, ReentrancyGuard {
         
                 // check if the word is the same as the word to guess
         if (keccak256(abi.encodePacked(_attempt)) == keccak256(abi.encodePacked(wordToFind))) {
-            youWon = true;
+            youWon[msg.sender] = true;
         } else {        
 
             // if the characters is in the word but not in the correct position set to 1 the number in the array
             for (uint256 i = 0; i < wordToGuessBytes.length; i++) {
                 if (wordToGuessBytes[i] == bytes(_attempt)[i]) {
-                    guessedWord[i] = 2;
+                    lastResult[msg.sender][i] = 2;
                 } else {
                     for (uint256 j = 0; j < wordToGuessBytes.length; j++) {
                         if (wordToGuessBytes[i] == bytes(_attempt)[j]) {
-                            guessedWord[i] = 1;
+                            lastResult[msg.sender][i] = 1;
                         }
                     }
                 }                  
             }
-            youWon = false;
+            youWon[msg.sender] = false;
         }
 
         attempts[msg.sender] = attempts[msg.sender].add(1);
     }
 
-    function getGuessedWord() external view returns (uint256[5] memory) {
-        return guessedWord;
+    function getResultByAddress() external view returns (uint256[5] memory) {
+        return lastResult[msg.sender];
     }
 }
