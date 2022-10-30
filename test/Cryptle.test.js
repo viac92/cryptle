@@ -40,19 +40,19 @@ contract("Cryptle", accounts => {
         it("has to return false if the word is not guessed", async function() {
             await this.cryptle.setWordToFind("space");
             await this.cryptle.guessWord("spacx");
-            const youWon = await this.cryptle.youWon();
+            const youWon = await this.cryptle.youWon(accounts[0]);
             youWon.should.equal(false);
         });
         it("has to return true if the word is guessed", async function() {
             await this.cryptle.setWordToFind("space");
             await this.cryptle.guessWord("space");
-            const youWon = await this.cryptle.youWon();
+            const youWon = await this.cryptle.youWon(accounts[0]);
             youWon.should.equal(true);
         });
         it("has to return this array [2, 2, 2, 2, 0] for the word 'spacx' because only last char is wrong and not present in the word", async function() {
             await this.cryptle.setWordToFind("space");
             await this.cryptle.guessWord("spacx");
-            const guessedWord = await this.cryptle.getGuessedWord();
+            const guessedWord = await this.cryptle.getResultByAddress();
 
             guessedWord[0].should.be.bignumber.equal("2");
             guessedWord[1].should.be.bignumber.equal("2");
@@ -63,7 +63,7 @@ contract("Cryptle", accounts => {
         it("has to return this array [1, 1, 2, 1, 1] for the reverse word 'ecaps'", async function() {
             await this.cryptle.setWordToFind("space");
             await this.cryptle.guessWord("ecaps");
-            const guessedWord = await this.cryptle.getGuessedWord();
+            const guessedWord = await this.cryptle.getResultByAddress();
 
             guessedWord[0].should.be.bignumber.equal("1");
             guessedWord[1].should.be.bignumber.equal("1");
@@ -74,7 +74,7 @@ contract("Cryptle", accounts => {
         it("has to return this array [0, 0, 2, 0, 0] for the word 'aaaaa'", async function() {
             await this.cryptle.setWordToFind("space");
             await this.cryptle.guessWord("aaaaa");
-            const guessedWord = await this.cryptle.getGuessedWord();
+            const guessedWord = await this.cryptle.getResultByAddress();
 
             guessedWord[0].should.be.bignumber.equal("0");
             guessedWord[1].should.be.bignumber.equal("0");
