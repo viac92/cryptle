@@ -72,4 +72,9 @@ contract Cryptle is Ownable, ReentrancyGuard {
     function getResultByAddress() external view returns (uint256[5] memory) {
         return lastResult[msg.sender];
     }
+
+    // Teseting functions
+    function getWordToGuess() external view onlyOwner returns (string memory) {
+        return wordToFind;
+    }
 }
